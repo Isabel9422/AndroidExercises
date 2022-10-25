@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Exercise1_IsabelSerna</string>
+    <string name="maintext">Select flag from %1$s</string>
+    <string name="button_text">Play again</string>
+    <string name="game_lost">Wrong Flag. Your score is %1$d</string>
+    <string name="leaderboard">You nailed it ! <br></br> New score is: %1$d</string>
+</resources>

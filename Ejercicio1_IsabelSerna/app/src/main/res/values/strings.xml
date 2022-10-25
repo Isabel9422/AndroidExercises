@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Ejercicio1_IsabelSerna</string>
+    <string name="maintext">Selecciona la bandera de %1$s</string>
+    <string name="button_text">Jugar otra vez</string>
+    <string name="game_lost">Bandera incorrecta. Tu puntuación es %1$d</string>
+    <string name="leaderboard">Has superado la puntuación máxima !  <br></br> La nueva puntuación es: %1$d</string>
+</resources>
