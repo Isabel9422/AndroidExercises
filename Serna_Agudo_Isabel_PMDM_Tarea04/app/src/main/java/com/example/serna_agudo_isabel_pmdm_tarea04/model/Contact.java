@@ -1,4 +1,4 @@
-package com.example.serna_agudo_isabel_pmdm_tarea04;
+package com.example.serna_agudo_isabel_pmdm_tarea04.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -13,10 +13,11 @@ public class Contact {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     @ColumnInfo(name = "id")
+    public
     int id;
 
     @ColumnInfo(name = "notification_type")
-    String notifType;
+    String notifyType;
 
     @ColumnInfo(name = "message")
     String msg;
@@ -25,7 +26,7 @@ public class Contact {
     int phoneNumber;
 
     @ColumnInfo(name = "birthdate")
-    Date birthDate;
+    String birthDate;
 
     @ColumnInfo(name = "name")
     String name;
@@ -33,20 +34,20 @@ public class Contact {
     public Contact() {
     }
 
-    public Contact(String notifType, String msg, int phoneNumber, Date birthDate, String name) {
-        this.notifType = notifType;
+    public Contact(String notifyType, String msg, int phoneNumber, String birthDate, String name) {
+        this.notifyType = notifyType;
         this.msg = msg;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
         this.name = name;
     }
 
-    public String getNotifType() {
-        return notifType;
+    public String getNotifyType() {
+        return notifyType;
     }
 
-    public void setNotifType(String notifType) {
-        this.notifType = notifType;
+    public void setNotifyType(String notifyType) {
+        this.notifyType = this.notifyType;
     }
 
     public String getMsg() {
@@ -65,11 +66,11 @@ public class Contact {
         this.phoneNumber = phoneNumber;
     }
 
-    public Date getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 

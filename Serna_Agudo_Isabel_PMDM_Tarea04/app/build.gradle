@@ -22,17 +22,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 }
 
 dependencies {
 
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
-
-    // Dependencies for working with Architecture components
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     // Room components
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
