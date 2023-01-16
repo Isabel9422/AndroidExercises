@@ -1,19 +1,6 @@
 package com.example.serna_agudo_isabel_pmdm_tarea04;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
-
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -24,14 +11,39 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.serna_agudo_isabel_pmdm_tarea04.databinding.ActivityMainBinding;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+import com.example.serna_agudo_isabel_pmdm_tarea04.databinding.ActivityMainBinding;
+import com.example.serna_agudo_isabel_pmdm_tarea04.model.Contact;
+import com.example.serna_agudo_isabel_pmdm_tarea04.repository.ContactRepository;
+
+public class MainActivity extends AppCompatActivity implements BirthdayHelperRecyclerViewAdapter.AdapterClickListener {
 
     private ActivityMainBinding binding;
     private MainActivityViewModel viewModel;
+    Uri uri = ContactsContract.Data.CONTENT_URI;
 
-    private ActivityResultLauncher<String> requestPermissionLauncher =
+    String[] projection = new String[]{
+            ContactsContract.Contacts.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Event.START_DATE,
+    };
+
+    String where =
+            ContactsContract.Data.MIMETYPE + "= ? AND " +
+                    ContactsContract.CommonDataKinds.Event.TYPE + "=" +
+                    ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY;
+
+    String[] selectionArgs = new String[]{
+            ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
+    };
+    String sortOrder = null;
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
                     // Permission is granted. Continue the action or workflow in your app.
@@ -46,35 +58,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             });
 
-    private void retrieveContacts() {
-        LoaderManager.getInstance(this).initLoader(0, null, this);
-    }
-
-    @SuppressLint("InlinedApi")
-    private static final String[] PROJECTION = {
-            ContactsContract.Contacts._ID,
-//            ContactsContract.Contacts.LOOKUP_KEY,
-            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
-            ContactsContract.Contacts.HAS_PHONE_NUMBER,
-            ContactsContract.Contacts.PHOTO_ID,
-    };
-
-    String WHERE =
-            ContactsContract.Data.MIMETYPE + "= ? AND " +
-                    ContactsContract.CommonDataKinds.Event.TYPE + "=" +
-                    ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY;
-
-    String[] SELECTION_ARGS = new String[]{
-            ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
+        viewModel = new ViewModelProvider(
+                this,
+                new MainActivityViewModel.Factory(new ContactRepository(getApplicationContext()))
+        ).get(MainActivityViewModel.class);
 
-        setContacts();
+        setObservers();
 
         setContentView(binding.getRoot());
     }
@@ -83,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onStart() {
         super.onStart();
         requestContactPermission();
-
-//        isConnected();
     }
 
     private void requestContactPermission() {
@@ -122,63 +113,34 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 .show();
     }
 
-    private void setContacts() {
+    private void setObservers() {
+        viewModel.repository.getAllContacts().observe(this, contacts -> {
+            // Creamos el Adapter y lo cargamos en el recycler view.
+            Log.d("Contacts", "Contactos: " + contacts.size());
 
-        // Cargarlos en la BBDD de room
-
-        // Vamos a recuperar los datos de la BBDD
-
-        // Vamos a mostar los datos de la BBDD en la pantalla
-
+            BirthdayHelperRecyclerViewAdapter adapter = new BirthdayHelperRecyclerViewAdapter(this, contacts, this);
+            binding.mainActivityContactsRecyclerView.setAdapter(adapter);
+        });
     }
 
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        Log.i("Cursor", "onCreateLoader");
+    void retrieveContacts() {
 
-        CursorLoader cl = new CursorLoader(
-                this,
-                ContactsContract.Contacts.CONTENT_URI,
-                PROJECTION,
-                null,
-                null,
-                null
-        );
+        String[] proj = new String[]{
+                ContactsContract.Contacts.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Event.START_DATE,
+        };
 
+        Cursor c = getContentResolver().query(uri, projection, where, selectionArgs, sortOrder);
+        Cursor cPhoneNumber = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, proj, null, null, null);
         // Load contacts into DB
-        viewModel.getContacts(cl.loadInBackground());
-
-        return cl;
+        viewModel.getContacts(c, cPhoneNumber);
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        Log.i("Cursor", "onLoadFinished");
+    public void onClickListener(Contact contact) {
+        Toast.makeText(this, "Click: " + contact.getName(), Toast.LENGTH_SHORT).show();
     }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        Log.i("Cursor", "onLoaderReset");
-
-    }
-
-
-//    public boolean isConnected() {
-//
-//        ConnectivityManager connMgr = (ConnectivityManager)
-//                getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
-//        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-//        if (networkInfo != null && networkInfo.isConnected()) {
-//            Log.d("MainActivity", "Funciona la conexion");
-//            return true;
-//        } else {
-//            Log.d("MainActivity", "Ha habido un problema");
-//            return false;
-//        }
-//
-//    }
-
 
 //    public void enviarSMS(String telefono, String mensaje) {
 //        try {
@@ -192,6 +154,4 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 //            e.printStackTrace();
 //        }
 //    }
-
-
 }

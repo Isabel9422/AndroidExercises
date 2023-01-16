@@ -19,7 +19,20 @@ public interface ContactDao {
     @Query("DELETE FROM miscumples")
     void deleteAll();
 
-    @Query("SELECT * FROM miscumples ORDER BY id ASC")
-    LiveData<List<Contact>> getAlphabetizedContacts();
+    @Query("SELECT * FROM miscumples ORDER BY contact_id ASC")
+    LiveData<List<Contact>> getContactsSortedAsc();
 
+    @Query("UPDATE miscumples SET " +
+            "contact_notification_type = :notifyType, " +
+            "contact_message = :msg, " +
+            "contact_phone_number = :phoneNumber," +
+            "contact_birthdate = :birthday, " +
+            "contact_name = :name " +
+            "WHERE " +
+            "contact_id = :id"
+    )
+    void update(String notifyType, String msg, String phoneNumber, String birthday, String name, int id);
+
+    @Query("SELECT EXISTS(SELECT * FROM miscumples WHERE contact_phone_number = :phoneNumber)")
+    Boolean exists(String phoneNumber);
 }

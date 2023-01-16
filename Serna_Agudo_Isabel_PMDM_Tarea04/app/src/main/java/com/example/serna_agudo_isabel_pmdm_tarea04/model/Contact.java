@@ -5,41 +5,44 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.Date;
-
 @Entity(tableName = "miscumples")
 public class Contact {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    @ColumnInfo(name = "id")
-    public
+    @ColumnInfo(name = "contact_id")
     int id;
 
-    @ColumnInfo(name = "notification_type")
+    @ColumnInfo(name = "contact_notification_type")
     String notifyType;
 
-    @ColumnInfo(name = "message")
+    @ColumnInfo(name = "contact_message")
     String msg;
 
-    @ColumnInfo(name = "phone_number")
-    int phoneNumber;
+    @ColumnInfo(name = "contact_phone_number")
+    String phoneNumber;
 
-    @ColumnInfo(name = "birthdate")
+    @ColumnInfo(name = "contact_birthdate")
     String birthDate;
 
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "contact_name")
     String name;
 
-    public Contact() {
-    }
 
-    public Contact(String notifyType, String msg, int phoneNumber, String birthDate, String name) {
+    public Contact(String notifyType, String msg, String phoneNumber, String birthDate, String name) {
         this.notifyType = notifyType;
         this.msg = msg;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
         this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNotifyType() {
@@ -58,11 +61,11 @@ public class Contact {
         this.msg = msg;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
