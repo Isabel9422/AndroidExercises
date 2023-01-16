@@ -37,6 +37,9 @@ public class Contact {
         this.name = name;
     }
 
+    public Contact() {
+    }
+
     public int getId() {
         return id;
     }

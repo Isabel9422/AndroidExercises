@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements BirthdayHelperRec
 
     private ActivityMainBinding binding;
     private MainActivityViewModel viewModel;
+    static Contact contact;
+
     Uri uri = ContactsContract.Data.CONTENT_URI;
 
     String[] projection = new String[]{
@@ -138,8 +140,10 @@ public class MainActivity extends AppCompatActivity implements BirthdayHelperRec
     }
 
     @Override
-    public void onClickListener(Contact contact) {
-        Toast.makeText(this, "Click: " + contact.getName(), Toast.LENGTH_SHORT).show();
+    public void onClickListener(Contact c) {
+        Intent i = new Intent(MainActivity.this, PerfilContactos.class);
+        contact = c;
+        startActivity(i);
     }
 
 //    public void enviarSMS(String telefono, String mensaje) {

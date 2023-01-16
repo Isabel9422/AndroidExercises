@@ -30,6 +30,17 @@ public class ContactRepository {
         return contactList;
     }
 
+    public void updateContact(Contact contact, int id) {
+        contactDao.update(
+                contact.getNotifyType(),
+                contact.getMsg(),
+                contact.getPhoneNumber(),
+                contact.getBirthDate(),
+                contact.getName(),
+                id
+        );
+    }
+
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
     public void insert(Contact contact) {

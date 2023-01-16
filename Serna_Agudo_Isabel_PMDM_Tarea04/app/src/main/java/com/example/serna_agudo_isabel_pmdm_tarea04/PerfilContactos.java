@@ -1,34 +1,57 @@
 package com.example.serna_agudo_isabel_pmdm_tarea04;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class PerfilContactos extends Fragment {
+import com.example.serna_agudo_isabel_pmdm_tarea04.model.Contact;
+import com.example.serna_agudo_isabel_pmdm_tarea04.repository.ContactRepository;
 
-    private PerfilContactosViewModel mViewModel;
+public class PerfilContactos extends AppCompatActivity {
 
-    public static PerfilContactos newInstance() {
-        return new PerfilContactos();
+    EditText phoneNumber;
+    EditText name;
+    EditText birthdate;
+    EditText msg;
+    Button button;
+    ContactRepository repository;
+
+    Contact c = MainActivity.contact;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_perfil_contactos);
+        button = findViewById(R.id.button);
+        init();
+
+        button.setOnClickListener(v -> repository.updateContact(c, c.getId()));
+
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_perfil_contactos, container, false);
+    protected void onStart() {
+        super.onStart();
+        setText();
+
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(PerfilContactosViewModel.class);
-        // TODO: Use the ViewModel
+    void init() {
+        phoneNumber = findViewById(R.id.phoneNumber);
+        name = findViewById(R.id.name);
+        birthdate = findViewById(R.id.birthdate);
+        msg = findViewById(R.id.msg);
+
     }
+
+    void setText() {
+        phoneNumber.setText(c.getPhoneNumber());
+        name.setText(c.getName());
+        birthdate.setText(c.getBirthDate());
+        msg.setText(c.getMsg());
+    }
+
 
 }

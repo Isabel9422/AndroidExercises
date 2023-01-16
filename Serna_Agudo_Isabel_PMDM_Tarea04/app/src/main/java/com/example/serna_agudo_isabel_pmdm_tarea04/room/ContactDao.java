@@ -19,6 +19,7 @@ public interface ContactDao {
     @Query("DELETE FROM miscumples")
     void deleteAll();
 
+
     @Query("SELECT * FROM miscumples ORDER BY contact_id ASC")
     LiveData<List<Contact>> getContactsSortedAsc();
 
